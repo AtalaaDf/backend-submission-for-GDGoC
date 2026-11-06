@@ -41,4 +41,3 @@ describe("Role Guard unit tests", () => {
     await expect(guard(request, dummyReply)).resolves.toBeUndefined();
   });
 });
-

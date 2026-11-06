@@ -30,4 +30,3 @@ export type LoginBody = z.infer<typeof loginBodySchema>;
 export type UserProfile = z.infer<typeof userProfileSchema>;
 export type LoginResponse = z.infer<typeof loginResponseSchema>;
 export type MeResponse = z.infer<typeof meResponseSchema>;
-

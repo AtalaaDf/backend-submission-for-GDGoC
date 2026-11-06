@@ -61,4 +61,3 @@ describe("Auth Routes HTTP tests", () => {
     expect(body.error.code).toBe("UNAUTHORIZED");
   });
 });
-

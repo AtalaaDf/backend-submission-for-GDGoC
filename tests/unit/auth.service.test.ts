@@ -86,4 +86,3 @@ describe("Auth Service unit tests", () => {
     await expect(authService.getProfile("u-5")).rejects.toThrow(UnauthorizedError);
   });
 });
-
