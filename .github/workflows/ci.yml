@@ -1,0 +1,86 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - "feat/**"
+      - "fix/**"
+  pull_request:
+    branches:
+      - main
+      - master
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-and-build:
+    name: Lint, Typecheck, Migrate & Test
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: gdgoc
+          POSTGRES_PASSWORD: gdgoc_password
+          POSTGRES_DB: gdgoc_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U gdgoc -d gdgoc_db"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      NODE_ENV: test
+      PORT: 3000
+      DATABASE_URL: postgres://gdgoc:gdgoc_password@localhost:5432/gdgoc_db
+      JWT_SECRET: super_secret_jwt_key_gdgoc_unsri_change_in_production_min_32_chars
+      JWT_EXPIRES_IN: 1h
+      CORS_ORIGINS: http://localhost:3000,http://localhost:5173
+      RATE_LIMIT_MAX: 100
+      LOGIN_RATE_LIMIT_MAX: 5
+      SEED_SUPERADMIN_PASSWORD: SuperAdminPassword123!
+      SEED_ADMIN_PASSWORD: AdminPassword123!
+      SEED_EXECUTIVE_PASSWORD: ExecutivePassword123!
+      SEED_PO1_PASSWORD: ProductOwner1Password123!
+      SEED_PO2_PASSWORD: ProductOwner2Password123!
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check code formatting
+        run: npm run format:check
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Run TypeScript typecheck
+        run: npm run typecheck
+
+      - name: Run Database Migrations
+        run: npm run db:migrate
+
+      - name: Run Database Seed
+        run: npm run db:seed
+
+      - name: Run Vitest Test Suite (Unit + Integration)
+        run: npm test
+
+      - name: Build TypeScript project
+        run: npm run build

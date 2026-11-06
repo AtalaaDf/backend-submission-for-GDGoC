@@ -134,4 +134,3 @@ describe("Attendances Routes HTTP tests", () => {
     expect(body.data.id).toBe(existingCheckIn.id);
   });
 });
-

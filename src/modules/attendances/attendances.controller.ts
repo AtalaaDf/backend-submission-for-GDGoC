@@ -38,4 +38,3 @@ export async function listAttendancesHandler(
 
   return reply.status(200).send(createSuccessResponse(result.data, result.meta));
 }
-
