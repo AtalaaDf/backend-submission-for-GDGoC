@@ -32,4 +32,3 @@ export function buildApp() {
 
   return app;
 }
-

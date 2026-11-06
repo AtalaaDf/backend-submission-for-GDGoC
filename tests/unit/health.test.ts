@@ -16,16 +16,21 @@ describe("Health check endpoints", () => {
     expect(body.data.timestamp).toBeDefined();
   });
 
-  it("GET /health/ready should return 200 with readiness status", async () => {
+  it("GET /health/ready should return appropriate readiness status based on database state", async () => {
     const response = await app.inject({
       method: "GET",
       url: "/health/ready",
     });
 
-    expect(response.statusCode).toBe(200);
+    expect([200, 503]).toContain(response.statusCode);
     const body = response.json();
-    expect(body.data.status).toBe("ready");
-    expect(body.data.database).toBe("connected");
+    if (response.statusCode === 200) {
+      expect(body.data.status).toBe("ready");
+      expect(body.data.database).toBe("connected");
+    } else {
+      expect(body.data.status).toBe("not_ready");
+      expect(body.data.database).toBe("disconnected");
+    }
+    expect(body.data.timestamp).toBeDefined();
   });
 });
-

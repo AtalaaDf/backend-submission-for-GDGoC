@@ -17,4 +17,3 @@ export const readyResponseSchema = z.object({
 
 export type HealthResponse = z.infer<typeof healthResponseSchema>;
 export type ReadyResponse = z.infer<typeof readyResponseSchema>;
-

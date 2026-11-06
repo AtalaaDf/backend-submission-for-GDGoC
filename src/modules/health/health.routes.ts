@@ -28,10 +28,10 @@ export async function healthRoutes(app: FastifyInstance) {
         tags: ["Health"],
         response: {
           200: readyResponseSchema,
+          503: readyResponseSchema,
         },
       },
     },
     getReadyHandler
   );
 }
-
