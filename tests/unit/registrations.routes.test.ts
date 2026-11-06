@@ -144,4 +144,3 @@ describe("Registrations Routes HTTP tests", () => {
     expect(body.meta).toBeDefined();
   });
 });
-

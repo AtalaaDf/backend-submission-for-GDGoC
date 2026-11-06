@@ -91,4 +91,3 @@ export async function registrationsRoutes(app: FastifyInstance) {
     cancelRegistrationHandler
   );
 }
-

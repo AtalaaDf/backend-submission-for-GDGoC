@@ -52,4 +52,3 @@ export async function cancelRegistrationHandler(
   );
   return reply.status(204).send();
 }
-

@@ -1,6 +1,7 @@
 import Fastify from "fastify";
 import { serializerCompiler, validatorCompiler } from "fastify-type-provider-zod";
 import { env } from "./config/env.js";
+import { attendancesRoutes } from "./modules/attendances/attendances.routes.js";
 import { auditLogsRoutes } from "./modules/audit-logs/audit-logs.routes.js";
 import { authRoutes } from "./modules/auth/auth.routes.js";
 import { divisionsRoutes } from "./modules/divisions/divisions.routes.js";
@@ -65,6 +66,7 @@ export function buildApp() {
   app.register(membersRoutes, { prefix: "/api/v1/members" });
   app.register(eventsRoutes, { prefix: "/api/v1/events" });
   app.register(registrationsRoutes, { prefix: "/api/v1" });
+  app.register(attendancesRoutes, { prefix: "/api/v1" });
 
   return app;
 }
