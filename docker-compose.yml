@@ -1,0 +1,48 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: gdgoc_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: gdgoc
+      POSTGRES_PASSWORD: gdgoc_password
+      POSTGRES_DB: gdgoc_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gdgoc -d gdgoc_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gdgoc_api
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgres://gdgoc:gdgoc_password@postgres:5432/gdgoc_db
+      JWT_SECRET: super_secret_jwt_key_gdgoc_unsri_change_in_production_min_32_chars
+      JWT_EXPIRES_IN: 1h
+      CORS_ORIGINS: http://localhost:3000,http://localhost:5173
+      RATE_LIMIT_MAX: 100
+      LOGIN_RATE_LIMIT_MAX: 5
+      SEED_SUPERADMIN_PASSWORD: SuperAdminPassword123!
+      SEED_ADMIN_PASSWORD: AdminPassword123!
+      SEED_EXECUTIVE_PASSWORD: ExecutivePassword123!
+      SEED_PO1_PASSWORD: ProductOwner1Password123!
+      SEED_PO2_PASSWORD: ProductOwner2Password123!
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+
