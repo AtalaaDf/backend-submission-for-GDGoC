@@ -38,4 +38,3 @@ export const authRepository = {
     return result[0] ?? null;
   },
 };
-

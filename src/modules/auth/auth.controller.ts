@@ -23,4 +23,3 @@ export async function meHandler(request: FastifyRequest, reply: FastifyReply) {
   const profile = await authService.getProfile(request.currentUser.id);
   return reply.status(200).send(createSuccessResponse(profile));
 }
-
