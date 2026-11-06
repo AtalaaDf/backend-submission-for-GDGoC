@@ -42,6 +42,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    command: >
+      sh -c "node dist/db/migrate.js && node dist/db/seed.js && node dist/server.js"
 
 volumes:
   postgres_data:
