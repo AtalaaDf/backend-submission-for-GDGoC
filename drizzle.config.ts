@@ -9,4 +9,3 @@ export default defineConfig({
     url: process.env.DATABASE_URL || "postgres://gdgoc:gdgoc_password@localhost:5432/gdgoc_db",
   },
 });
-
