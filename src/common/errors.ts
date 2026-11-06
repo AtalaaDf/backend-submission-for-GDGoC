@@ -54,4 +54,3 @@ export class InternalServerError extends AppError {
     super(500, "INTERNAL_ERROR", message);
   }
 }
-

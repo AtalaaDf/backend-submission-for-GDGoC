@@ -1,7 +1,9 @@
 import Fastify from "fastify";
 import { serializerCompiler, validatorCompiler } from "fastify-type-provider-zod";
 import { env } from "./config/env.js";
+import { authRoutes } from "./modules/auth/auth.routes.js";
 import { healthRoutes } from "./modules/health/health.routes.js";
+import { registerAuthPlugin } from "./plugins/auth.js";
 import { registerErrorHandler } from "./plugins/error-handler.js";
 import { registerRateLimit } from "./plugins/rate-limit.js";
 import { registerSecurity } from "./plugins/security.js";
@@ -37,6 +39,9 @@ export function buildApp() {
   // Rate limiting
   registerRateLimit(app);
 
+  // JWT authentication plugin
+  registerAuthPlugin(app);
+
   // OpenAPI Swagger & Swagger UI documentation (/docs)
   registerSwagger(app);
 
@@ -45,6 +50,9 @@ export function buildApp() {
 
   // Liveness and Readiness probes
   app.register(healthRoutes);
+
+  // API v1 Modules
+  app.register(authRoutes, { prefix: "/api/v1/auth" });
 
   return app;
 }

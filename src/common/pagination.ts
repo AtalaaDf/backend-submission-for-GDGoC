@@ -30,4 +30,3 @@ export function calculatePaginationMeta(
 export function escapeLikeString(input: string): string {
   return input.replace(/[%_\\]/g, "\\$&");
 }
-
