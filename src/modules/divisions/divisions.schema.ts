@@ -46,4 +46,3 @@ export type UpdateDivisionBody = z.infer<typeof updateDivisionBodySchema>;
 export type DivisionIdParams = z.infer<typeof divisionIdParamsSchema>;
 export type ListDivisionsQuery = z.infer<typeof listDivisionsQuerySchema>;
 export type DivisionResponse = z.infer<typeof divisionResponseSchema>;
-

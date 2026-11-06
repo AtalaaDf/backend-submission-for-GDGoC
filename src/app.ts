@@ -4,6 +4,7 @@ import { env } from "./config/env.js";
 import { auditLogsRoutes } from "./modules/audit-logs/audit-logs.routes.js";
 import { authRoutes } from "./modules/auth/auth.routes.js";
 import { divisionsRoutes } from "./modules/divisions/divisions.routes.js";
+import { eventsRoutes } from "./modules/events/events.routes.js";
 import { healthRoutes } from "./modules/health/health.routes.js";
 import { membersRoutes } from "./modules/members/members.routes.js";
 import { usersRoutes } from "./modules/users/users.routes.js";
@@ -61,6 +62,7 @@ export function buildApp() {
   app.register(auditLogsRoutes, { prefix: "/api/v1/audit-logs" });
   app.register(divisionsRoutes, { prefix: "/api/v1/divisions" });
   app.register(membersRoutes, { prefix: "/api/v1/members" });
+  app.register(eventsRoutes, { prefix: "/api/v1/events" });
 
   return app;
 }

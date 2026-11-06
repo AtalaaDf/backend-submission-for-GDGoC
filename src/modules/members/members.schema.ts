@@ -58,4 +58,3 @@ export type UpdateMemberBody = z.infer<typeof updateMemberBodySchema>;
 export type MemberIdParams = z.infer<typeof memberIdParamsSchema>;
 export type ListMembersQuery = z.infer<typeof listMembersQuerySchema>;
 export type MemberResponse = z.infer<typeof memberResponseSchema>;
-
