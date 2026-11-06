@@ -130,4 +130,3 @@ export async function eventsRoutes(app: FastifyInstance) {
     deleteEventHandler
   );
 }
-
