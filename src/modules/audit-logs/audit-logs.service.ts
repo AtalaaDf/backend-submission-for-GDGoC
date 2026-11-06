@@ -9,4 +9,3 @@ export const auditLogsService = {
     return { data, meta };
   },
 };
-

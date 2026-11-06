@@ -62,4 +62,3 @@ export type UpdateUserStatusBody = z.infer<typeof updateUserStatusBodySchema>;
 export type UserIdParams = z.infer<typeof userIdParamsSchema>;
 export type ListUsersQuery = z.infer<typeof listUsersQuerySchema>;
 export type UserResponse = z.infer<typeof userResponseSchema>;
-

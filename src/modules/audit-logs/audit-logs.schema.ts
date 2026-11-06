@@ -28,4 +28,3 @@ export const listAuditLogsQuerySchema = paginationQuerySchema
 
 export type ListAuditLogsQuery = z.infer<typeof listAuditLogsQuerySchema>;
 export type AuditLogResponse = z.infer<typeof auditLogResponseSchema>;
-

@@ -3,7 +3,9 @@ import { serializerCompiler, validatorCompiler } from "fastify-type-provider-zod
 import { env } from "./config/env.js";
 import { auditLogsRoutes } from "./modules/audit-logs/audit-logs.routes.js";
 import { authRoutes } from "./modules/auth/auth.routes.js";
+import { divisionsRoutes } from "./modules/divisions/divisions.routes.js";
 import { healthRoutes } from "./modules/health/health.routes.js";
+import { membersRoutes } from "./modules/members/members.routes.js";
 import { usersRoutes } from "./modules/users/users.routes.js";
 import { registerAuthPlugin } from "./plugins/auth.js";
 import { registerErrorHandler } from "./plugins/error-handler.js";
@@ -57,6 +59,8 @@ export function buildApp() {
   app.register(authRoutes, { prefix: "/api/v1/auth" });
   app.register(usersRoutes, { prefix: "/api/v1/users" });
   app.register(auditLogsRoutes, { prefix: "/api/v1/audit-logs" });
+  app.register(divisionsRoutes, { prefix: "/api/v1/divisions" });
+  app.register(membersRoutes, { prefix: "/api/v1/members" });
 
   return app;
 }

@@ -83,4 +83,3 @@ describe("Users Service unit tests", () => {
     ).rejects.toThrow(NotFoundError);
   });
 });
-
