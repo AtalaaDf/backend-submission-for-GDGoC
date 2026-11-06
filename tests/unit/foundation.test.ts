@@ -38,4 +38,3 @@ describe("Foundation plugins and error handling", () => {
     expect(response.headers["x-frame-options"]).toBeDefined();
   });
 });
-

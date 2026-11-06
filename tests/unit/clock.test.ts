@@ -30,4 +30,3 @@ describe("Clock utility", () => {
     expect(clock.now().getFullYear()).toBeGreaterThan(2020);
   });
 });
-

@@ -31,4 +31,3 @@ export async function recordAuditLog(
 
   await executor.insert(auditLogs).values(newLog);
 }
-

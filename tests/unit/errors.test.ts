@@ -62,4 +62,3 @@ describe("AppError and specialized error classes", () => {
     expect(error.code).toBe("INTERNAL_ERROR");
   });
 });
-
