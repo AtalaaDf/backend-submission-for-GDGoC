@@ -10,4 +10,3 @@ export async function listAuditLogsHandler(
   const result = await auditLogsService.listAuditLogs(request.query);
   return reply.status(200).send(createSuccessResponse(result.data, result.meta));
 }
-

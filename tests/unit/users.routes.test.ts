@@ -1,10 +1,14 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { buildApp } from "../../src/app.js";
 import { auditLogsRepository } from "../../src/modules/audit-logs/audit-logs.repository.js";
 import { authRepository } from "../../src/modules/auth/auth.repository.js";
 
 describe("Users and Audit Logs Routes HTTP tests", () => {
   const app = buildApp();
+
+  beforeAll(async () => {
+    await app.ready();
+  });
 
   beforeEach(() => {
     vi.restoreAllMocks();
