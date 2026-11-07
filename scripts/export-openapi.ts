@@ -18,4 +18,3 @@ exportOpenApi().catch((err) => {
   console.error("Failed to export OpenAPI spec:", err);
   process.exit(1);
 });
-
