@@ -20,7 +20,7 @@
     "export:openapi": "tsx scripts/export-openapi.ts"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.0.0"
   },
   "keywords": [
     "gdgoc",
