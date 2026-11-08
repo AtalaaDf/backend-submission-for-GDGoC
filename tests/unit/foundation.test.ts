@@ -19,6 +19,16 @@ describe("Foundation plugins and error handling", () => {
     expect(body.error.requestId).toBeDefined();
   });
 
+  it("should redirect root route / to /docs", async () => {
+    const response = await app.inject({
+      method: "GET",
+      url: "/",
+    });
+
+    expect(response.statusCode).toBe(302);
+    expect(response.headers.location).toBe("/docs");
+  });
+
   it("should serve Swagger documentation at /docs", async () => {
     const response = await app.inject({
       method: "GET",

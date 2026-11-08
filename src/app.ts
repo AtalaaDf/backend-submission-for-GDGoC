@@ -56,6 +56,11 @@ export function buildApp() {
   // Global error handler & 404 handler
   registerErrorHandler(app);
 
+  // Root redirect to OpenAPI Swagger documentation
+  app.get("/", async (_request, reply) => {
+    return reply.redirect("/docs");
+  });
+
   // Liveness and Readiness probes
   app.register(healthRoutes);
 

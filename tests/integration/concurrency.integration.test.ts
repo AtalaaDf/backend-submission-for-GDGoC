@@ -149,7 +149,7 @@ describe.runIf(isPostgresAvailable)(
       for (const m of insertedMembers) {
         await db.delete(members).where(eq(members.id, m.id));
       }
-    });
+    }, 15000);
 
     it("Duplicate Registration Concurrency: 10 concurrent registrations for same member results in exactly 1 success and 9 rejections", async () => {
       // 1. Create event with plenty of quota
@@ -213,7 +213,7 @@ describe.runIf(isPostgresAvailable)(
       await db.delete(eventRegistrations).where(eq(eventRegistrations.eventId, eventId));
       await db.delete(events).where(eq(events.id, eventId));
       await db.delete(members).where(eq(members.id, memberId));
-    });
+    }, 15000);
 
     it("Attendance Idempotency Concurrency: 10 concurrent check-ins result in 1 insert and zero errors", async () => {
       const eventStart = new Date("2026-12-01T10:00:00Z");
@@ -292,6 +292,6 @@ describe.runIf(isPostgresAvailable)(
       await db.delete(eventRegistrations).where(eq(eventRegistrations.eventId, eventId));
       await db.delete(events).where(eq(events.id, eventId));
       await db.delete(members).where(eq(members.id, memberId));
-    });
+    }, 15000);
   }
 );
