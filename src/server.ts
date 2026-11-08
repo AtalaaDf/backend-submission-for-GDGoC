@@ -1,7 +1,5 @@
-import { buildApp } from "./app.js";
+import app from "./app.js";
 import { env } from "./config/env.js";
-
-const app = buildApp();
 
 async function start() {
   try {
@@ -16,4 +14,8 @@ async function start() {
   }
 }
 
-start();
+if (process.env.VERCEL !== "1") {
+  start();
+}
+
+export default app;

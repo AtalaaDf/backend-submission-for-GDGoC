@@ -3,9 +3,11 @@ import postgres from "postgres";
 import { env } from "../config/env.js";
 import * as schema from "./schema.js";
 
-// Disable prepared statements for compatibility with connection poolers
+// Disable prepared statements for compatibility with connection poolers (Neon)
+// and set a small connection pool (max 5) suited for serverless execution
 export const queryClient = postgres(env.DATABASE_URL, {
   prepare: false,
+  max: 5,
 });
 
 export const db = drizzle(queryClient, { schema });

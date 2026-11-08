@@ -65,21 +65,21 @@ Salin file contoh dan sesuaikan nilainya:
 cp .env.example .env
 ```
 
-| Variable                   | Keterangan                                | Default                                                   |
-| -------------------------- | ----------------------------------------- | --------------------------------------------------------- |
-| `NODE_ENV`                 | Environment aplikasi                      | `development`                                             |
-| `PORT`                     | Port server                               | `3000`                                                    |
-| `DATABASE_URL`             | Koneksi PostgreSQL                        | `postgres://gdgoc:gdgoc_password@localhost:5432/gdgoc_db` |
-| `JWT_SECRET`               | Secret JWT (min 32 karakter)              | Wajib diganti di produksi                                 |
-| `JWT_EXPIRES_IN`           | Masa berlaku token                        | `1h`                                                      |
-| `CORS_ORIGINS`             | Daftar origin yang diizinkan (koma-pisah) | `http://localhost:3000`                                   |
-| `RATE_LIMIT_MAX`           | Batas request per menit (global)          | `100`                                                     |
-| `LOGIN_RATE_LIMIT_MAX`     | Batas percobaan login per menit           | `5`                                                       |
-| `SEED_SUPERADMIN_PASSWORD` | Password superadmin seed                  | `SuperAdminPassword123!`                                  |
-| `SEED_ADMIN_PASSWORD`      | Password admin seed                       | `AdminPassword123!`                                       |
-| `SEED_EXECUTIVE_PASSWORD`  | Password executive seed                   | `ExecutivePassword123!`                                   |
-| `SEED_PO1_PASSWORD`        | Password PO 1 seed                        | `ProductOwner1Password123!`                               |
-| `SEED_PO2_PASSWORD`        | Password PO 2 seed                        | `ProductOwner2Password123!`                               |
+| Variable                   | Keterangan                                              | Default                                                   |
+| -------------------------- | ------------------------------------------------------- | --------------------------------------------------------- |
+| `NODE_ENV`                 | Environment aplikasi                                    | `development`                                             |
+| `PORT`                     | Port server                                             | `3000`                                                    |
+| `DATABASE_URL`             | Koneksi PostgreSQL                                      | `postgres://gdgoc:gdgoc_password@localhost:5432/gdgoc_db` |
+| `JWT_SECRET`               | Secret JWT (min 32 karakter)                            | Wajib diganti di produksi                                 |
+| `JWT_EXPIRES_IN`           | Masa berlaku token                                      | `1h`                                                      |
+| `CORS_ORIGINS`             | Daftar origin yang diizinkan (koma-pisah)               | `http://localhost:3000`                                   |
+| `RATE_LIMIT_MAX`           | Batas request per menit (global)                        | `100`                                                     |
+| `LOGIN_RATE_LIMIT_MAX`     | Batas percobaan login per menit                         | `5`                                                       |
+| `SEED_SUPERADMIN_PASSWORD` | Password superadmin seed (min 12 karakter, dev default) | `SuperAdminPassword123!`                                  |
+| `SEED_ADMIN_PASSWORD`      | Password admin seed (min 12 karakter, dev default)      | `AdminPassword123!`                                       |
+| `SEED_EXECUTIVE_PASSWORD`  | Password executive seed (min 12 karakter, dev default)  | `ExecutivePassword123!`                                   |
+| `SEED_PO1_PASSWORD`        | Password PO 1 seed (min 12 karakter, dev default)       | `ProductOwner1Password123!`                               |
+| `SEED_PO2_PASSWORD`        | Password PO 2 seed (min 12 karakter, dev default)       | `ProductOwner2Password123!`                               |
 
 ---
 
@@ -148,7 +148,7 @@ Setelah `npm run db:seed` atau `docker compose up`, akun berikut tersedia:
 | `po1@gdgoc-unsri.org`        | `ProductOwner1Password123!` | `po`         |
 | `po2@gdgoc-unsri.org`        | `ProductOwner2Password123!` | `po`         |
 
-> Password seed dapat diubah melalui environment variable sebelum menjalankan seed. Di produksi, gunakan password yang kuat dan unik.
+> Nilai default di atas hanya berlaku di lingkungan `development` dan `test`. Di lingkungan `production`, skrip seed menolak berjalan jika `SEED_*_PASSWORD` kosong atau memakai nilai contoh bawaan. Runtime API di produksi tidak memerlukan variabel `SEED_*_PASSWORD`.
 
 ### Contoh Login
 
@@ -328,6 +328,72 @@ Setiap request terautentikasi memuat ulang data user dari database (status aktif
 
 ---
 
+## Deploy ke Vercel (Fastify Zero-Config)
+
+Aplikasi ini mendukung deployment serverless ke Vercel (paket Hobby) dengan framework Fastify zero-config sesuai panduan resmi [Vercel Fastify Documentation](https://vercel.com/docs/frameworks/backend/fastify).
+
+### Prasyarat
+
+1. Akun [Vercel](https://vercel.com) dan [Neon](https://neon.tech).
+2. Repository GitHub sudah terhubung ke akun Vercel.
+
+### Langkah Deploy
+
+#### 1. Buat Database Neon
+
+1. Login ke Neon dashboard dan buat project PostgreSQL baru.
+2. Salin **Connection String** yang menggunakan connection pooler (format: `postgres://user:password@ep-xyz-pooler.region.neon.tech/neondb?sslmode=require`).
+
+#### 2. Jalankan Migrasi dan Seed dari Komputer Lokal (PowerShell)
+
+Migrasi dan seed tidak dijalankan saat aplikasi start di Vercel. Jalankan skrip migrasi dan seed secara manual dari terminal PowerShell di komputer lokal terhadap `DATABASE_URL` Neon:
+
+```powershell
+# Set environment variable DATABASE_URL untuk sesi PowerShell saat ini
+$env:DATABASE_URL="postgres://user:password@ep-xyz-pooler.region.neon.tech/neondb?sslmode=require"
+
+# Jalankan migrasi tabel database
+npm run db:migrate
+
+# Jalankan seed akun awal di produksi
+# Catatan: Saat NODE_ENV=production, seluruh SEED_*_PASSWORD wajib diisi eksplisit
+# dengan password unik minimal 12 karakter (nilai contoh default di .env.example ditolak).
+$env:NODE_ENV="production"
+$env:SEED_SUPERADMIN_PASSWORD="SuperAdminKuat2026!"
+$env:SEED_ADMIN_PASSWORD="AdminKuat2026!"
+$env:SEED_EXECUTIVE_PASSWORD="ExecutiveKuat2026!"
+$env:SEED_PO1_PASSWORD="PO1WebKuat2026!"
+$env:SEED_PO2_PASSWORD="POMobileKuat2026!"
+npm run db:seed
+```
+
+#### 3. Import Project ke Vercel
+
+1. Di dashboard Vercel, klik **Add New > Project** dan import repository GitHub ini.
+2. Vercel akan otomatis mengenali framework **Fastify** secara zero-config melalui entrypoint `src/app.ts` / `src/server.ts`.
+3. Konfigurasi build dan output directory tidak perlu diubah (gunakan pengaturan default).
+
+#### 4. Atur Environment Variables di Vercel
+
+Tambahkan environment variables berikut di bagian **Settings > Environment Variables** di Vercel (runtime API di produksi **tidak** menuntut variabel `SEED_*_PASSWORD`):
+
+- `NODE_ENV`
+- `PORT`
+- `DATABASE_URL`
+- `JWT_SECRET`
+- `JWT_EXPIRES_IN`
+- `CORS_ORIGINS`
+- `RATE_LIMIT_MAX`
+- `LOGIN_RATE_LIMIT_MAX`
+
+#### 5. Catatan Arsitektur Vercel Serverless
+
+- **Rate Limit:** Rate limit `@fastify/rate-limit` berjalan secara in-memory sehingga bersifat **per-instance** di lingkungan serverless Vercel (Fluid compute).
+- **Connection Pooling:** Koneksi database telah dikonfigurasi dengan ukuran pool kecil (`max: 5`) dan prepared statement dinonaktifkan (`prepare: false`) agar kompatibel penuh dengan connection pooler Neon.
+- **Native Dependency Bundling:** Berkas konfigurasi `vercel.json` telah menyertakan prebuild binary `argon2` agar ter-bundle dengan benar di Vercel Functions.
+
+---
+
 ## Deploy ke Render + Neon
 
 ### Prasyarat
@@ -353,21 +419,21 @@ Setiap request terautentikasi memuat ulang data user dari database (status aktif
 
 4. Tambahkan Environment Variables:
 
-| Key                        | Value                                              |
-| -------------------------- | -------------------------------------------------- |
-| `NODE_ENV`                 | `production`                                       |
-| `PORT`                     | `3000`                                             |
-| `DATABASE_URL`             | Connection string Neon (dengan `?sslmode=require`) |
-| `JWT_SECRET`               | String acak minimal 64 karakter                    |
-| `JWT_EXPIRES_IN`           | `1h`                                               |
-| `CORS_ORIGINS`             | URL frontend yang diizinkan                        |
-| `RATE_LIMIT_MAX`           | `100`                                              |
-| `LOGIN_RATE_LIMIT_MAX`     | `5`                                                |
-| `SEED_SUPERADMIN_PASSWORD` | Password kuat (min 12 karakter)                    |
-| `SEED_ADMIN_PASSWORD`      | Password kuat                                      |
-| `SEED_EXECUTIVE_PASSWORD`  | Password kuat                                      |
-| `SEED_PO1_PASSWORD`        | Password kuat                                      |
-| `SEED_PO2_PASSWORD`        | Password kuat                                      |
+| Key                        | Value                                                            |
+| -------------------------- | ---------------------------------------------------------------- |
+| `NODE_ENV`                 | `production`                                                     |
+| `PORT`                     | `3000`                                                           |
+| `DATABASE_URL`             | Connection string Neon (dengan `?sslmode=require`)               |
+| `JWT_SECRET`               | String acak minimal 64 karakter                                  |
+| `JWT_EXPIRES_IN`           | `1h`                                                             |
+| `CORS_ORIGINS`             | URL frontend yang diizinkan                                      |
+| `RATE_LIMIT_MAX`           | `100`                                                            |
+| `LOGIN_RATE_LIMIT_MAX`     | `5`                                                              |
+| `SEED_SUPERADMIN_PASSWORD` | Password unik kuat (min 12 karakter, wajib jika seed dijalankan) |
+| `SEED_ADMIN_PASSWORD`      | Password unik kuat (min 12 karakter, wajib jika seed dijalankan) |
+| `SEED_EXECUTIVE_PASSWORD`  | Password unik kuat (min 12 karakter, wajib jika seed dijalankan) |
+| `SEED_PO1_PASSWORD`        | Password unik kuat (min 12 karakter, wajib jika seed dijalankan) |
+| `SEED_PO2_PASSWORD`        | Password unik kuat (min 12 karakter, wajib jika seed dijalankan) |
 
 5. Deploy service. Render otomatis build dari Dockerfile dan menjalankan migrasi dan seed saat container start.
 

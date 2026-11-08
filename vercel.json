@@ -1,0 +1,11 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "src/**": {
+      "includeFiles": "node_modules/argon2/**"
+    },
+    "dist/**": {
+      "includeFiles": "node_modules/argon2/**"
+    }
+  }
+}
