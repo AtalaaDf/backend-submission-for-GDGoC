@@ -1,3 +1,4 @@
+import type { IncomingMessage, ServerResponse } from "node:http";
 import { app } from "./app.js";
 import { env } from "./config/env.js";
 
@@ -18,7 +19,7 @@ if (process.env.VERCEL !== "1") {
   start();
 }
 
-export default async function handler(req: any, res: any) {
+export default async function handler(req: IncomingMessage, res: ServerResponse) {
   await app.ready();
   app.server.emit("request", req, res);
 }

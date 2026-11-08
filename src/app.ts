@@ -1,3 +1,4 @@
+import type { IncomingMessage, ServerResponse } from "node:http";
 import Fastify from "fastify";
 import { serializerCompiler, validatorCompiler } from "fastify-type-provider-zod";
 import { env } from "./config/env.js";
@@ -73,7 +74,7 @@ export function buildApp() {
 
 export const app = buildApp();
 
-export default async function handler(req: any, res: any) {
+export default async function handler(req: IncomingMessage, res: ServerResponse) {
   await app.ready();
   app.server.emit("request", req, res);
 }
