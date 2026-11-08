@@ -1,4 +1,4 @@
-import app from "./app.js";
+import { app } from "./app.js";
 import { env } from "./config/env.js";
 
 async function start() {
@@ -18,4 +18,7 @@ if (process.env.VERCEL !== "1") {
   start();
 }
 
-export default app;
+export default async function handler(req: any, res: any) {
+  await app.ready();
+  app.server.emit("request", req, res);
+}

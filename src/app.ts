@@ -71,11 +71,9 @@ export function buildApp() {
   return app;
 }
 
-const app = buildApp();
+export const app = buildApp();
 
-// In Vercel zero-config Fastify deployment, listen call triggers function routing
-if (process.env.VERCEL === "1") {
-  app.listen({ port: env.PORT, host: "0.0.0.0" });
+export default async function handler(req: any, res: any) {
+  await app.ready();
+  app.server.emit("request", req, res);
 }
-
-export default app;
